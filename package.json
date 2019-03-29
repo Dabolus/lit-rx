@@ -1,0 +1,27 @@
+{
+  "name": "lit-rx",
+  "description": "RxJS utils to be used with lit-html.",
+  "version": "0.0.0",
+  "author": "Giorgio Garasto <giorgio@garasto.it>",
+  "license": "MIT",
+  "repository": "Dabolus/lit-rx",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "format": "clang-format --version; find src | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
+    "lint": "tslint -p ."
+  },
+  "devDependencies": {
+    "clang-format": "^1.2.4",
+    "lit-html": "^1.0.0",
+    "rxjs": "^6.4.0",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.4000"
+  },
+  "peerDependencies": {
+    "lit-html": "^1.0.0",
+    "rxjs": "^6.4.0"
+  }
+}
