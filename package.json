@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc",
     "format": "clang-format --version; find src | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
-    "lint": "tslint -p ."
+    "lint": "tslint -p .",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "clang-format": "^1.2.4",
