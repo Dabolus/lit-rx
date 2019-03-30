@@ -1,9 +1,9 @@
 import {directive, Part} from 'lit-html';
-import {Observable} from 'rxjs';
+import {Subscribable} from 'rxjs';
 
 interface PreviousValue {
   readonly value: unknown;
-  readonly observable: Observable<unknown>;
+  readonly observable: Subscribable<unknown>;
 }
 
 // For each part, remember the value that was last rendered to the part by the
@@ -23,7 +23,7 @@ const previousValues = new WeakMap<Part, PreviousValue>();
  * @param value An observable
  */
 export const observe =
-    directive(<T>(observable: Observable<T>) => (part: Part) => {
+    directive(<T>(observable: Subscribable<T>) => (part: Part) => {
       // If we have already set up this observable in this part, we
       // don't need to do anything
       const previousValue = previousValues.get(part);
