@@ -1,5 +1,17 @@
-import {directive, NodePart, Part} from 'lit-html';
+import {directive, Part} from 'lit-html';
 import {Observable} from 'rxjs';
+
+interface PreviousValue {
+  readonly value: unknown;
+  readonly observable: Observable<unknown>;
+}
+
+// For each part, remember the value that was last rendered to the part by the
+// observe directive, and the observable that was last set as a value.
+// The observable is used as a unique key to check if the last value
+// rendered to the part was with observe. If not, we'll always re-render the
+// value passed to observe.
+const previousValues = new WeakMap<Part, PreviousValue>();
 
 /**
  * A directive that renders the items of an observable[1], replacing
@@ -11,39 +23,26 @@ import {Observable} from 'rxjs';
  * @param value An observable
  */
 export const observe =
-    directive(<T>(value: Observable<T>) => (part: Part) => {
-      if (!(part instanceof NodePart)) {
-        throw new Error('observe can only be used in text bindings');
-      }
-      // If we've already set up this particular observable, we don't need
-      // to do anything.
-      if (value === part.value) {
+    directive(<T>(observable: Observable<T>) => (part: Part) => {
+      // If we have already set up this observable in this part, we
+      // don't need to do anything
+      const previousValue = previousValues.get(part);
+
+      if (previousValue !== undefined &&
+          observable === previousValue.observable) {
         return;
       }
 
-      // We nest a new part to keep track of previous item values separately
-      // of the observable as a value itself.
-      const itemPart = new NodePart(part.options);
-      part.value = value;
-
-      let i = 0;
-
-      value.subscribe((v) => {
-        // Check to make sure that value is the still the current value of
-        // the part, and if not bail because a new value owns this part
-        if (part.value !== value) {
+      observable.subscribe((value) => {
+        // If we have the same value and the same observable in the same part,
+        // we don't need to do anything
+        if (previousValue !== undefined && part.value === previousValue.value &&
+            observable === previousValue.observable) {
           return;
         }
 
-        // When we get the first value, clear the part. This let's the
-        // previous value display until we can replace it.
-        if (i === 0) {
-          part.clear();
-          itemPart.appendIntoPart(part);
-        }
-
-        itemPart.setValue(v);
-        itemPart.commit();
-        i++;
+        part.setValue(value);
+        part.commit();
+        previousValues.set(part, {value, observable});
       });
     });
