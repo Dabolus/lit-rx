@@ -7,10 +7,10 @@ interface PreviousValue {
 }
 
 // For each part, remember the value that was last rendered to the part by the
-// observe directive, and the subscribable that was last set as a value.
+// subscribe directive, and the subscribable that was last set as a value.
 // The subscribable is used as a unique key to check if the last value
-// rendered to the part was with observe. If not, we'll always re-render the
-// value passed to observe.
+// rendered to the part was with subscribe. If not, we'll always re-render the
+// value passed to subscribe.
 const previousValues = new WeakMap<Part, PreviousValue>();
 
 /**
@@ -20,7 +20,7 @@ const previousValues = new WeakMap<Part, PreviousValue>();
  *
  * @param value A subscribable
  */
-export const observe =
+export const subscribe =
     directive(<T>(subscribable: Subscribable<T>) => (part: Part) => {
       // If we have already set up this subscribable in this part, we
       // don't need to do anything
