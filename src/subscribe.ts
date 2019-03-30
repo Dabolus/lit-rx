@@ -58,7 +58,8 @@ export const subscribe = directive(
       };
 
       if ('then' in subscribableOrPromiseLike) {
-        return subscribableOrPromiseLike.then(cb);
+        subscribableOrPromiseLike.then(cb);
+        return;
       }
       subscribableOrPromiseLike.subscribe(cb);
     });
