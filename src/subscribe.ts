@@ -1,7 +1,7 @@
 import {directive, Part} from 'lit-html';
 import {Subscribable} from 'rxjs';
 
-type SubscribableOrPromiseLike<T> = Subscribable<T> | PromiseLike<T>;
+type SubscribableOrPromiseLike<T> = Subscribable<T>|PromiseLike<T>;
 
 interface PreviousValue<T> {
   readonly value: T;
@@ -22,12 +22,15 @@ const previousValues = new WeakMap<Part, PreviousValue<unknown>>();
  *
  * @param value A subscribable
  */
-export const subscribe =
-    directive(<T>(subscribableOrPromiseLike: SubscribableOrPromiseLike<T>) => (part: Part) => {
+export const subscribe = directive(
+    <T>(subscribableOrPromiseLike: SubscribableOrPromiseLike<T>) => (
+        part: Part) => {
       // If subscribableOrPromiseLike is neither a subscribable or
       // a promise like, throw an error
-      if (!('then' in subscribableOrPromiseLike) && !('subscribe' in subscribableOrPromiseLike)) {
-        throw new Error('subscribableOrPromiseLike must be a subscribable or a promise like');
+      if (!('then' in subscribableOrPromiseLike) &&
+          !('subscribe' in subscribableOrPromiseLike)) {
+        throw new Error(
+            'subscribableOrPromiseLike must be a subscribable or a promise like');
       }
 
       // If we have already set up this subscribable in this part, we
@@ -35,7 +38,8 @@ export const subscribe =
       const previousValue = previousValues.get(part);
 
       if (previousValue !== undefined &&
-          subscribableOrPromiseLike === previousValue.subscribableOrPromiseLike) {
+          subscribableOrPromiseLike ===
+              previousValue.subscribableOrPromiseLike) {
         return;
       }
 
@@ -43,7 +47,8 @@ export const subscribe =
         // If we have the same value and the same subscribable in the same part,
         // we don't need to do anything
         if (previousValue !== undefined && part.value === previousValue.value &&
-            subscribableOrPromiseLike === previousValue.subscribableOrPromiseLike) {
+            subscribableOrPromiseLike ===
+                previousValue.subscribableOrPromiseLike) {
           return;
         }
 
