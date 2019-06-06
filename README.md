@@ -6,7 +6,7 @@ The subscribe directive can be used to render data emitted by a subscribable or
 by a promise like.
 
 It works pretty much like Angular's async pipe and it can be binded to any type 
-of lit-html template part (content binding, attribute bounding, boolean 
+of lit-html template part (content binding, attribute binding, boolean 
 attribute binding, event binding and property binding should all work).
 
 Here is a tiny example that binds an observable to a boolean attribute:
