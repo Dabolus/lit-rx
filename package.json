@@ -10,15 +10,19 @@
   "typings": "index.d.ts",
   "scripts": {
     "build": "tsc",
-    "format": "clang-format --version; find src | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
-    "lint": "tslint -p .",
+    "lint": "eslint 'src/**/*.ts'",
+    "format": "eslint 'src/**/*.ts' --fix",
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
-    "clang-format": "^1.2.4",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "lit-html": "^1.0.0",
+    "prettier": "^1.18.2",
     "rxjs": "^6.4.0",
-    "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
   },
   "peerDependencies": {
