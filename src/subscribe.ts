@@ -1,7 +1,7 @@
-import {directive, Part} from 'lit-html';
-import {Subscribable} from 'rxjs';
+import { directive, Part } from 'lit-html';
+import { Subscribable } from 'rxjs';
 
-type SubscribableOrPromiseLike<T> = Subscribable<T>|PromiseLike<T>;
+type SubscribableOrPromiseLike<T> = Subscribable<T> | PromiseLike<T>;
 
 interface PreviousValue<T> {
   readonly value: T;
@@ -23,43 +23,51 @@ const previousValues = new WeakMap<Part, PreviousValue<unknown>>();
  * @param value A subscribable
  */
 export const subscribe = directive(
-    <T>(subscribableOrPromiseLike: SubscribableOrPromiseLike<T>) => (
-        part: Part) => {
-      // If subscribableOrPromiseLike is neither a subscribable or
-      // a promise like, throw an error
-      if (!('then' in subscribableOrPromiseLike) &&
-          !('subscribe' in subscribableOrPromiseLike)) {
-        throw new Error(
-            'subscribableOrPromiseLike must be a subscribable or a promise like');
-      }
+  <T>(subscribableOrPromiseLike: SubscribableOrPromiseLike<T>) => (
+    part: Part,
+  ) => {
+    // If subscribableOrPromiseLike is neither a subscribable or
+    // a promise like, throw an error
+    if (
+      !('then' in subscribableOrPromiseLike) &&
+      !('subscribe' in subscribableOrPromiseLike)
+    ) {
+      throw new Error(
+        'subscribableOrPromiseLike must be a subscribable or a promise like',
+      );
+    }
 
-      // If we have already set up this subscribable in this part, we
-      // don't need to do anything
-      const previousValue = previousValues.get(part);
+    // If we have already set up this subscribable in this part, we
+    // don't need to do anything
+    const previousValue = previousValues.get(part);
 
-      if (previousValue !== undefined &&
-          subscribableOrPromiseLike ===
-              previousValue.subscribableOrPromiseLike) {
+    if (
+      previousValue !== undefined &&
+      subscribableOrPromiseLike === previousValue.subscribableOrPromiseLike
+    ) {
+      return;
+    }
+
+    const cb = (value: T) => {
+      // If we have the same value and the same subscribable in the same part,
+      // we don't need to do anything
+      if (
+        previousValue !== undefined &&
+        part.value === previousValue.value &&
+        subscribableOrPromiseLike === previousValue.subscribableOrPromiseLike
+      ) {
         return;
       }
 
-      const cb = (value: T) => {
-        // If we have the same value and the same subscribable in the same part,
-        // we don't need to do anything
-        if (previousValue !== undefined && part.value === previousValue.value &&
-            subscribableOrPromiseLike ===
-                previousValue.subscribableOrPromiseLike) {
-          return;
-        }
+      part.setValue(value);
+      part.commit();
+      previousValues.set(part, { value, subscribableOrPromiseLike });
+    };
 
-        part.setValue(value);
-        part.commit();
-        previousValues.set(part, {value, subscribableOrPromiseLike});
-      };
-
-      if ('then' in subscribableOrPromiseLike) {
-        subscribableOrPromiseLike.then(cb);
-        return;
-      }
-      subscribableOrPromiseLike.subscribe(cb);
-    });
+    if ('then' in subscribableOrPromiseLike) {
+      subscribableOrPromiseLike.then(cb);
+      return;
+    }
+    subscribableOrPromiseLike.subscribe(cb);
+  },
+);
