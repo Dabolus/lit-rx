@@ -20,13 +20,13 @@
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "lit-html": "^1.0.0",
+    "lit-html": "^1.1.0",
     "prettier": "^1.18.2",
-    "rxjs": "^6.4.0",
-    "typescript": "^3.3.4000"
+    "rxjs": "^6.5.2",
+    "typescript": "^3.5.1"
   },
   "peerDependencies": {
-    "lit-html": "^1.0.0",
-    "rxjs": "^6.4.0"
+    "lit-html": "^1.1.0",
+    "rxjs": "^6.5.2"
   }
 }
