@@ -1,7 +1,7 @@
 {
   "name": "lit-rx",
   "description": "RxJS utils to be used with lit-html.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "author": "Giorgio Garasto <giorgio@garasto.it>",
   "license": "MIT",
   "repository": "Dabolus/lit-rx",
